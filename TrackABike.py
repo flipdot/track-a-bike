@@ -1,6 +1,7 @@
 import request_templates
 import requests
 from lxml import etree
+import re
 
 DEFAULT_HEADERS = {
     'User-Agent': 'flinkster.android/3.0',
@@ -38,6 +39,28 @@ class TrackABike:
     @property
     def stations(self):
         locations = self.xml.findall('.//Locations')
+        stations = []
         for location in locations:
             description = location.find('Description')
-            print(description.text)
+            match = re.search(r'^(\d+)\s+(.*)$', description.text)
+            station_id = match.group(1)
+            station_name = match.group(2)
+            free_bikes = []
+            for bike in location.findall('FreeBikes'):
+                free_bikes.append({
+                    'number': int(bike.find('Number').text),
+                    'can_be_rented': bool(bike.find('canBeRented').text),
+                    'can_be_returned': bool(bike.find('canBeReturned').text),
+                    'version': int(bike.find('Version').text),
+                    'marke_id': int(bike.find('MarkeID').text),
+                    'marke_name': bike.find('MarkeName').text,
+                    'is_pedelec': bike.find('isPedelec').text,
+                })
+            print(station_id)
+            print(station_name)
+            stations.append({
+                'id': station_id,
+                'name': station_name,
+                'free_bikes': free_bikes
+            })
+        return stations
