@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import request_templates
 import requests
 from lxml import etree
@@ -23,7 +25,8 @@ class TrackABike:
         self.headers = headers
         self.refresh()
 
-    def refresh(self, max_results=60, search_radius=8049, lat=51.318564, lng=9.500768):
+    def refresh(self, max_results=60, search_radius=8049, lat=51.318564, lng=9.500768, request_time=None):
+        request_time = request_time or datetime.now()
         body = request_templates.LIST_BIKES.format(
             max_results=max_results,
             search_radius=search_radius,
@@ -31,6 +34,7 @@ class TrackABike:
             long=lng,
             username=self.username,
             password=self.password,
+            request_time=request_time.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
         )
         response = requests.post(API_URL, body, headers=self.headers)
         self.raw_data = response.content

@@ -10,7 +10,7 @@ xmlns:v="http://schemas.xmlsoap.org/soap/envelope/">
           <Password>{password}</Password>
         </UserData>
         <LanguageUID>1</LanguageUID>
-        <RequestTime>2017-03-23T18:31:20.516Z</RequestTime>
+        <RequestTime>{request_time}</RequestTime>
         <Version/>
       </CommonParams>
       <SearchPosition>
