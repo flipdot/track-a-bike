@@ -1,6 +1,6 @@
 import request_templates
 import requests
-from xml.etree import ElementTree as ET
+from lxml import etree
 
 DEFAULT_HEADERS = {
     'User-Agent': 'flinkster.android/3.0',
@@ -20,6 +20,7 @@ class TrackABike:
         self.username = username
         self.password = password
         self.headers = headers
+        self.refresh()
 
     def refresh(self, max_results=60, search_radius=8049, lat=51.318564, long=9.500768):
         body = request_templates.LIST_BIKES.format(
@@ -32,17 +33,11 @@ class TrackABike:
         )
         response = requests.post(API_URL, body, headers=self.headers)
         self.raw_data = response.content
+        self.xml = etree.fromstring(response.content)
 
-
-        # locations = data.findall('.//Locations')
-        # station_names = []
-        # for location in locations:
-        #     description = location.find('Description')
-        #     station_names.append(description.text)
-        #
-        # station_names.sort()
-
-        # pprint(station_names)
-        # print(len(station_names))
-        # print(locations.getElementsByTagName('Description'))
-        # print(data.toprettyxml())
+    @property
+    def stations(self):
+        locations = self.xml.findall('.//Locations')
+        for location in locations:
+            description = location.find('Description')
+            print(description.text)

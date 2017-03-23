@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+
 from configparser import ConfigParser
 from TrackABike import TrackABike
+from lxml import etree
 
 config = ConfigParser()
 
@@ -22,4 +25,4 @@ username = config['CREDENTIALS']['username']
 password = config['CREDENTIALS']['password']
 track_a_bike = TrackABike(username, password)
 track_a_bike.refresh()
-print(track_a_bike.raw_data)
+print(etree.tostring(track_a_bike.xml, pretty_print=True).decode('utf-8'))
