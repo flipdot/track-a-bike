@@ -45,26 +45,23 @@ class TrackABike:
             match = re.search(r'^(\d+)\s+(.*)$', description.text)
             station_id = int(match.group(1))
             station_name = match.group(2)
-            lat = float(location.find('Position').find('Latitude').text)
-            lng = float(location.find('Position').find('Longitude').text)
             free_bikes = []
             for bike in location.findall('FreeBikes'):
                 free_bikes.append({
                     'number': int(bike.find('Number').text),
-                    'can_be_rented': bool(bike.find('canBeRented').text),
-                    'can_be_returned': bool(bike.find('canBeReturned').text),
+                    'can_be_rented': bike.find('canBeRented').text == 'true',
+                    'can_be_returned': bike.find('canBeReturned').text == 'true',
                     'version': int(bike.find('Version').text),
                     'marke_id': int(bike.find('MarkeID').text),
                     'marke_name': bike.find('MarkeName').text,
-                    'is_pedelec': bool(bike.find('isPedelec').text),
+                    'is_pedelec': bike.find('isPedelec').text == 'true',
                 })
-            print(station_id)
-            print(station_name)
             stations.append({
                 'id': station_id,
                 'name': station_name,
                 'free_bikes': free_bikes,
-                'lat': lat,
-                'lng': lng,
+                'lat': float(location.find('Position').find('Latitude').text),
+                'lng': float(location.find('Position').find('Longitude').text),
+                'is_outside': location.find('isOutside').text == 'true'
             })
         return stations
