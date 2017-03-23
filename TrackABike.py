@@ -23,12 +23,12 @@ class TrackABike:
         self.headers = headers
         self.refresh()
 
-    def refresh(self, max_results=60, search_radius=8049, lat=51.318564, long=9.500768):
+    def refresh(self, max_results=60, search_radius=8049, lat=51.318564, lng=9.500768):
         body = request_templates.LIST_BIKES.format(
             max_results=max_results,
             search_radius=search_radius,
             lat=lat,
-            long=long,
+            long=lng,
             username=self.username,
             password=self.password,
         )
@@ -43,8 +43,10 @@ class TrackABike:
         for location in locations:
             description = location.find('Description')
             match = re.search(r'^(\d+)\s+(.*)$', description.text)
-            station_id = match.group(1)
+            station_id = int(match.group(1))
             station_name = match.group(2)
+            lat = float(location.find('Position').find('Latitude').text)
+            lng = float(location.find('Position').find('Longitude').text)
             free_bikes = []
             for bike in location.findall('FreeBikes'):
                 free_bikes.append({
@@ -54,13 +56,15 @@ class TrackABike:
                     'version': int(bike.find('Version').text),
                     'marke_id': int(bike.find('MarkeID').text),
                     'marke_name': bike.find('MarkeName').text,
-                    'is_pedelec': bike.find('isPedelec').text,
+                    'is_pedelec': bool(bike.find('isPedelec').text),
                 })
             print(station_id)
             print(station_name)
             stations.append({
                 'id': station_id,
                 'name': station_name,
-                'free_bikes': free_bikes
+                'free_bikes': free_bikes,
+                'lat': lat,
+                'lng': lng,
             })
         return stations
