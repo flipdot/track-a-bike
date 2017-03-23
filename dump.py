@@ -7,7 +7,7 @@ from datetime import datetime
 
 from TrackABike import TrackABike
 
-DUMP_DIRECTORY = 'dumps'
+DUMP_DIRECTORY = sys.argv[1] if len(sys.argv) > 1 else 'dumps'
 
 if not os.path.exists(DUMP_DIRECTORY):
     os.makedirs(DUMP_DIRECTORY)
