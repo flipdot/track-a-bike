@@ -1,5 +1,2 @@
-argparse==1.2.1
-configparser==3.5.0
 lxml==3.7.3
 requests==2.13.0
-wsgiref==0.1.2

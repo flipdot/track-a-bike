@@ -23,7 +23,12 @@ track_a_bike = TrackABike(
     config['CREDENTIALS']['password'],
 )
 
-filename = datetime.now().strftime('%Y-%m-%d_%H.%M')
+now = datetime.now()
+directory_name = os.path.join(DUMP_DIRECTORY, now.strftime('%Y-%m-%d'))
+filename = now.strftime('%Y-%m-%d_%H.%M')
 
-with open(os.path.join(DUMP_DIRECTORY, '{}.xml'.format(filename)), 'wb') as f:
+if not os.path.exists(directory_name):
+    os.makedirs(directory_name)
+
+with open(os.path.join(directory_name, '{}.xml'.format(filename)), 'wb') as f:
     f.write(track_a_bike.raw_data)
