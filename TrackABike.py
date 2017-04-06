@@ -17,15 +17,15 @@ API_URL = 'https://xml.dbcarsharing-buchung.de/hal2_cabserver/hal2_cabserver_3.p
 
 
 class TrackABike:
-    def __init__(self, username, password, headers=DEFAULT_HEADERS):
-        if not (username and password):
-            raise ValueError('Username and password are required')
+    def __init__(self, username=None, password=None, headers=DEFAULT_HEADERS):
         self.username = username
         self.password = password
         self.headers = headers
-        self.refresh()
 
     def refresh(self, max_results=60, search_radius=8049, lat=51.318564, lng=9.500768, request_time=None):
+        if not (self.username and self.password):
+            raise ValueError('Username and password not set')
+
         request_time = request_time or datetime.now()
         body = request_templates.LIST_BIKES.format(
             max_results=max_results,
@@ -37,8 +37,11 @@ class TrackABike:
             request_time=request_time.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
         )
         response = requests.post(API_URL, body, headers=self.headers)
-        self.raw_data = response.content
-        self.xml = etree.fromstring(response.content)
+        self.load_xml(response.content)
+
+    def load_xml(self, raw_data):
+        self.raw_data = raw_data
+        self.xml = etree.fromstring(raw_data)
 
     @property
     def stations(self):
