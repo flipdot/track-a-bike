@@ -87,6 +87,5 @@ def read_xml_dumps():
         files.sort()
         for file in files:
             file_path = os.path.join(directory_path, file)
-            print(file_path)
             with open(file_path, 'rb') as f:
                 yield f.read()
