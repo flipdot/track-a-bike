@@ -4,6 +4,9 @@ import request_templates
 import requests
 from lxml import etree
 import re
+import os
+
+DUMP_DIRECTORY = os.path.abspath('dumps')
 
 DEFAULT_HEADERS = {
     'User-Agent': 'flinkster.android/3.0',
@@ -72,3 +75,18 @@ class TrackABike:
                 'is_outside': location.find('isOutside').text == 'true'
             })
         return stations
+
+def read_xml_dumps():
+    directories = os.listdir(DUMP_DIRECTORY)
+    directories.sort()
+    for directory in directories:
+        directory_path = os.path.abspath(os.path.join(DUMP_DIRECTORY, directory))
+        if not os.path.isdir(directory_path):
+            continue
+        files = os.listdir(directory_path)
+        files.sort()
+        for file in files:
+            file_path = os.path.join(directory_path, file)
+            print(file_path)
+            with open(file_path, 'rb') as f:
+                yield f.read()
