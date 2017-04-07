@@ -24,6 +24,7 @@ class TrackABike:
         self.username = username
         self.password = password
         self.headers = headers
+        self.raw_data = None
 
     def refresh(self, max_results=60, search_radius=8049, lat=51.318564, lng=9.500768, request_time=None):
         if not (self.username and self.password):
@@ -49,7 +50,7 @@ class TrackABike:
     @property
     def stations(self):
         locations = self.xml.findall('.//Locations')
-        stations = []
+        stations = {}
         for location in locations:
             description = location.find('Description')
             match = re.search(r'^(\d+)\s+(.*)$', description.text)
@@ -66,14 +67,13 @@ class TrackABike:
                     'marke_name': bike.find('MarkeName').text,
                     'is_pedelec': bike.find('isPedelec').text == 'true',
                 })
-            stations.append({
-                'id': station_id,
+            stations[station_id] = {
                 'name': station_name,
                 'free_bikes': free_bikes,
                 'lat': float(location.find('Position').find('Latitude').text),
                 'lng': float(location.find('Position').find('Longitude').text),
                 'is_outside': location.find('isOutside').text == 'true'
-            })
+            }
         return stations
 
 def read_xml_dumps():
@@ -87,6 +87,5 @@ def read_xml_dumps():
         files.sort()
         for file in files:
             file_path = os.path.join(directory_path, file)
-            print(file_path)
             with open(file_path, 'rb') as f:
                 yield f.read()
