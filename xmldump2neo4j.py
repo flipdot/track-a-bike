@@ -45,7 +45,11 @@ def create_moving_bikes_relations(session):
                     session.run("""
                              MATCH (a {id: {station_a}})
                              MATCH (b {id: {station_b}})
-                             CREATE (a)-[r:BIKE_MOVED {timestamp: {timestamp}, bike_id: {bike_id}, duration: {duration}}]->(b)""",
+                             CREATE (a)-[r:BIKE_MOVED {
+                                timestamp: {timestamp},
+                                bike_id: {bike_id},
+                                duration: {duration}
+                            }]->(b)""",
                                 {
                                     'station_a': prev_station['id'],
                                     'station_b': station_id,
@@ -59,7 +63,7 @@ def create_moving_bikes_relations(session):
 if __name__ == '__main__':
     driver = GraphDatabase.driver("bolt://localhost:7687", auth=basic_auth("neo4j", "Eiqu3soh"))
     session = driver.session()
-    wipe_database(session)
-    create_stations(session)
-    create_moving_bikes_relations(session)
-    # session.close()
+    # wipe_database(session)
+    # create_stations(session)
+    # create_moving_bikes_relations(session)
+    session.close()
