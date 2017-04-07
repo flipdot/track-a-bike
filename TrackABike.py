@@ -76,6 +76,7 @@ class TrackABike:
             }
         return stations
 
+
 def read_xml_dumps():
     directories = os.listdir(DUMP_DIRECTORY)
     directories.sort()
@@ -87,5 +88,6 @@ def read_xml_dumps():
         files.sort()
         for file in files:
             file_path = os.path.join(directory_path, file)
+            timestamp = datetime.strptime(file, '%Y-%m-%d_%H.%M.xml')
             with open(file_path, 'rb') as f:
-                yield f.read()
+                yield (timestamp, f.read())

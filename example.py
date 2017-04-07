@@ -29,8 +29,11 @@ track_a_bike.refresh()
 # print(etree.tostring(track_a_bike.xml, pretty_print=True).decode('utf-8'))
 
 stations = track_a_bike.stations
-stations.sort(key=lambda x: len(x['free_bikes']), reverse=True)
-fn = lambda x: f"{x['name']:50} {len(x['free_bikes'])}"
-print('\n'.join(map(fn, stations)))
-total_bikes = sum(map(lambda x: len(x['free_bikes']), stations))
-print(f'Gesamtzahl Fahrräder: {total_bikes}')
+# stations.sort(key=lambda x: len(x['free_bikes']), reverse=True)
+# fn = lambda x: f"{x['name']:50} {len(x['free_bikes'])}"
+# print('\n'.join(map(fn, stations)))
+# total_bikes = sum(map(lambda x: len(x['free_bikes']), stations))
+# print(f'Gesamtzahl Fahrräder: {total_bikes}')
+for station_id, station in stations.items():
+    for bike in station['free_bikes']:
+        print(bike['number'])
