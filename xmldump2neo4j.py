@@ -78,7 +78,7 @@ def create_moving_bikes_relations(session):
 if __name__ == '__main__':
     driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))
     session = driver.session()
-    wipe_database(session)
+    # wipe_database(session)
     create_stations(session)
     create_moving_bikes_relations(session)
     session.close()
