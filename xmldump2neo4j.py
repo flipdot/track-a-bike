@@ -54,7 +54,6 @@ def create_moving_bikes_relations(session):
                 })
                 if prev_station is not None and prev_station['id'] != station_id:
                     # print(f'{prev_station_id}->{station_id}')
-                    bike_positions[bike_id] = station_id
                     session.run("""
                              MATCH (a:Station {id: {station_a}})
                              MATCH (b:Station {id: {station_b}})
