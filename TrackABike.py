@@ -68,6 +68,7 @@ class TrackABike:
                     'is_pedelec': bike.find('isPedelec').text == 'true',
                 })
             stations[station_id] = {
+                'id': station_id,
                 'name': station_name,
                 'free_bikes': free_bikes,
                 'lat': float(location.find('Position').find('Latitude').text),
