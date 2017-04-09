@@ -53,7 +53,7 @@ if __name__ == '__main__':
             start_time = datetime.fromtimestamp(record['r']['timestamp_start']).strftime('%H\:%M')
             end_time = datetime.fromtimestamp(record['r']['timestamp_end']).strftime('%H\:%M')
             label = f'{start_time} -\n{end_time}'
-            graph.add_edge(station_a, station_b, label=label)
+            graph.add_edge(station_a, station_b, label=label, color='red' if record['r']['transporter'] else 'black')
             # graph.add_edge(station_a, station_b, label=bike_id)
         filename = f"{start.strftime('%Y-%m-%d_%H_%M')} - {end.strftime('%Y-%m-%d_%H_%M')}.dot"
         write_dot(graph, os.path.join(OUTPUT_DIRECTORY, filename))
