@@ -15,7 +15,12 @@ def create_stations():
     track_a_bike.load_xml(data)
     with open(os.path.join(CSV_DIRECTORY, 'stations.csv'), 'w') as f:
         fieldnames = ['id', 'name', 'lat', 'lng', 'is_outside']
-        headernames = {'id': 'station_id:ID(Station)'}
+        headernames = {
+            'id': 'station_id:ID(Station)',
+            'lat': 'lat:FLOAT',
+            'lng': 'lng:FLOAT',
+            'is_outside': 'is_outside:BOOLEAN'
+        }
         writer = csv.DictWriter(f, [headernames.get(x, x) for x in fieldnames])
         stations = map(lambda x: {headernames.get(key, key): x[key] for key in fieldnames},
                        track_a_bike.stations.values())
@@ -26,7 +31,12 @@ def create_stations():
 def create_bikes():
     track_a_bike = TrackABike()
     fieldnames = ['number', 'version', 'marke_id', 'marke_name', 'is_pedelec']
-    headernames = {'number': 'bike_id:ID(Bike)'}
+    headernames = {
+        'number': 'bike_id:ID(Bike)',
+        'version': 'version:INT',
+        'marke_id': 'marke_id:INT',
+        'is_pedelec': 'is_pedelec:BOOLEAN'
+    }
     bikes = {}
     i = 0
     for timestamp, data in read_xml_dumps():
@@ -57,10 +67,12 @@ def create_bike_positions_and_movement():
     fieldnames_position = ['number', 'timestamp', 'can_be_rented', 'can_be_returned', 'station_id']
     headernames_position = {
         'number': ':START_ID(Bike)',
-        'station_id': ':END_ID(Station)'
+        'station_id': ':END_ID(Station)',
+        'timestamp': 'timestamp:INT',
+        'can_be_rented': 'can_be_rented:BOOLEAN',
     }
-    fieldnames_movement = [':START_ID(Station)', ':END_ID(Station)', 'timestamp_start', 'timestamp_end', 'duration',
-                           'bike_id']
+    fieldnames_movement = [':START_ID(Station)', ':END_ID(Station)', 'timestamp_start:INT', 'timestamp_end:INT',
+                           'duration:INT', 'bike_id:INT']
     with open(os.path.join(CSV_DIRECTORY, 'bike_positions.csv'), 'w') as f:
         with open(os.path.join(CSV_DIRECTORY, 'bike_movements.csv'), 'w') as f2:
             position_writer = csv.DictWriter(f, [headernames_position.get(x, x) for x in fieldnames_position])
@@ -84,17 +96,19 @@ def create_bike_positions_and_movement():
                             movement_writer.writerow({
                                 ':START_ID(Station)': prev_station['id'],
                                 ':END_ID(Station)': station['id'],
-                                'timestamp_start': int(prev_station['timestamp'].timestamp()),
-                                'timestamp_end': int(timestamp.timestamp()),
-                                'duration': (timestamp - prev_station['timestamp']).total_seconds(),
-                                'bike_id': bike_id,
+                                'timestamp_start:INT': int(prev_station['timestamp'].timestamp()),
+                                'timestamp_end:INT': int(timestamp.timestamp()),
+                                'duration:INT': (timestamp - prev_station['timestamp']).total_seconds(),
+                                'bike_id:INT': bike_id,
                             })
                         current_bike_positions[bike_id] = {'id': station['id'], 'timestamp': timestamp}
-                        bike_position = {headernames_position.get(key, key): bike.get(key, None) for key in fieldnames_position}
+                        bike_position = {headernames_position.get(key, key): bike.get(key, None) for key in
+                                         fieldnames_position}
                         bike_position[headernames_position['station_id']] = station['id']
-                        bike_position['timestamp'] = int(timestamp.timestamp())
+                        bike_position[headernames_position['timestamp']] = int(timestamp.timestamp())
                         bike_positions.append(bike_position)
                     position_writer.writerows(bike_positions)
+
 
 if __name__ == '__main__':
     if not os.path.exists(CSV_DIRECTORY):
