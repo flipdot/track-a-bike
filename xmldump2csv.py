@@ -98,7 +98,7 @@ def create_bike_positions_and_movement():
                                 ':END_ID(Station)': station['id'],
                                 'timestamp_start:INT': int(prev_station['timestamp'].timestamp()),
                                 'timestamp_end:INT': int(timestamp.timestamp()),
-                                'duration:INT': (timestamp - prev_station['timestamp']).total_seconds(),
+                                'duration:INT': int((timestamp - prev_station['timestamp']).total_seconds()),
                                 'bike_id:INT': bike_id,
                             })
                         current_bike_positions[bike_id] = {'id': station['id'], 'timestamp': timestamp}
