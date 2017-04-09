@@ -47,8 +47,8 @@ if __name__ == '__main__':
         WHERE {start} <= r.timestamp_start < {end}
         RETURN a, r, b""", {'start': start.timestamp(), 'end': end.timestamp()})
         for record in result:
-            station_a = record['a']['station_id']
-            station_b = record['b']['station_id']
+            station_a = record['a']['name'].replace('/', ' /\n')
+            station_b = record['b']['name'].replace('/', ' /\n')
             bike_id = record['r']['bike_id']
             start_time = datetime.fromtimestamp(record['r']['timestamp_start']).strftime('%H\:%M')
             end_time = datetime.fromtimestamp(record['r']['timestamp_end']).strftime('%H\:%M')
