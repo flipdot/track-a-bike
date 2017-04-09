@@ -1,6 +1,7 @@
 config.ini
 dumps/
 csv/
+graphviz/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
