@@ -45,36 +45,38 @@ def render_hourly(session):
         date = end
 
 def add_transporters(session, graph):
-    min_cnt = 20
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED {transporter: true}]->(b)
         WITH a, b, count(*) AS cnt
-        WHERE cnt > {min_cnt}
-        RETURN a, b, cnt""", {'min_cnt': min_cnt})
+        RETURN a, b, cnt
+        ORDER BY cnt desc
+        LIMIT 10""")
     result = list(result)
     max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
+    min_cnt = min(result, key=lambda x: x['cnt'])['cnt']
     for record in result:
-        station_a = record['a']['name']
-        station_b = record['b']['name']
+        station_a = record['a']['name'].replace('/', ' /\n')
+        station_b = record['b']['name'].replace('/', ' /\n')
         label = record['cnt']
-        penwidth = ((record['cnt'] - min_cnt) / max_cnt) * 10
+        penwidth = 1 + ((record['cnt'] - min_cnt) / max_cnt) * 10
         graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#aa0000')
 
 def add_popular_stations(session, graph):
-    min_cnt = 27
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED]->(b)
         WHERE NOT EXISTS(r.transporter)
         WITH a, b, count(*) AS cnt
-        WHERE cnt > {min_cnt}
-        RETURN a, b, cnt""", {'min_cnt': min_cnt})
+        RETURN a, b, cnt
+        ORDER BY cnt desc
+        LIMIT 10""")
     result = list(result)
     max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
+    min_cnt = min(result, key=lambda x: x['cnt'])['cnt']
     for record in result:
-        station_a = record['a']['name']
-        station_b = record['b']['name']
+        station_a = record['a']['name'].replace('/', ' /\n')
+        station_b = record['b']['name'].replace('/', ' /\n')
         label = record['cnt']
-        penwidth = ((record['cnt'] - min_cnt) / max_cnt) * 10
+        penwidth = 1 + ((record['cnt'] - min_cnt) / max_cnt) * 10
         graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#00aa00')
 
 if __name__ == '__main__':
