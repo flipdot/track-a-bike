@@ -85,7 +85,7 @@ if __name__ == '__main__':
     driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))
     session = driver.session()
     stations = get_stations(session)
-    # render_hourly(session)
+    render_hourly(session)
     graph = nx.MultiDiGraph()
     add_transporters(session, graph)
     add_popular_stations(session, graph)
