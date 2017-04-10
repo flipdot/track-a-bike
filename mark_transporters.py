@@ -25,6 +25,11 @@ if __name__ == '__main__':
     driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))
     session = driver.session()
 
+    session.run("""
+        MATCH (:Station)-[r:BIKE_MOVED]->(:Station)
+        WHERE r.duration > 60 * 60 * 24
+        SET r.transpoter = true""")
+
     date = START_DATE
     while date < END_DATE:
         print(date)
