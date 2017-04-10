@@ -18,24 +18,7 @@ def get_stations(session):
     result = session.run('MATCH (station:Station) RETURN station')
     return [x['station'] for x in result]
 
-if __name__ == '__main__':
-    if not os.path.exists(OUTPUT_DIRECTORY):
-        os.makedirs(OUTPUT_DIRECTORY)
-    driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))
-    session = driver.session()
-    stations = get_stations(session)
-    min_lat = min(stations, key=lambda x: x['lat'])['lat']
-    min_lng = min(stations, key=lambda x: x['lng'])['lng']
-    max_lat = max(stations, key=lambda x: x['lat'])['lat']
-    max_lng = max(stations, key=lambda x: x['lng'])['lng']
-    for station in stations:
-        name = station['name']
-        lat = station['lat']
-        lng = station['lng']
-        x = (lat - min_lat) / (max_lat - min_lat)
-        y = (lng - min_lng) / (max_lng - min_lng)
-        # graph.add_node(station['name'], id=station['station_id'], lat=station['lat'], lng=station['lng'])
-
+def render_hourly(session):
     date = START_DATE
     while date < END_DATE:
         print(date.strftime('%d.%m.%Y %H:%M'))
@@ -43,9 +26,9 @@ if __name__ == '__main__':
         start = date
         end = (date + STEP)
         result = session.run("""
-        MATCH (a:Station)-[r:BIKE_MOVED]->(b:Station)
-        WHERE {start} <= r.timestamp_start < {end}
-        RETURN a, r, b""", {'start': start.timestamp(), 'end': end.timestamp()})
+            MATCH (a:Station)-[r:BIKE_MOVED]->(b:Station)
+            WHERE {start} <= r.timestamp_start < {end}
+            RETURN a, r, b""", {'start': start.timestamp(), 'end': end.timestamp()})
         for record in result:
             station_a = record['a']['name'].replace('/', ' /\n')
             station_b = record['b']['name'].replace('/', ' /\n')
@@ -60,5 +43,46 @@ if __name__ == '__main__':
         filename = f"{start.strftime('%Y-%m-%d_%H_%M')} - {end.strftime('%Y-%m-%d_%H_%M')}.dot"
         write_dot(graph, os.path.join(OUTPUT_DIRECTORY, filename))
         date = end
+
+def render_transporters(session):
+    result = session.run("""
+        MATCH (a)-[r:BIKE_MOVED {transporter: true}]->(b)
+        WITH a, b, count(*) AS cnt
+        WHERE cnt > 15
+        RETURN a, b, cnt""")
+    graph = nx.MultiDiGraph()
+    for record in result:
+        station_a = record['a']['name']
+        station_b = record['b']['name']
+        label = record['cnt']
+        penwidth = record['cnt'] * 0.1
+        graph.add_edge(station_a, station_b, label=label, penwidth=penwidth)
+    write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'transports.dot'))
+
+def render_popular_stations(session):
+    result = session.run("""
+        MATCH (a)-[r:BIKE_MOVED]->(b)
+        WHERE NOT EXISTS(r.transporter)
+        WITH a, b, count(*) AS cnt
+        WHERE cnt > 25
+        RETURN a, b, cnt""")
+    graph = nx.MultiDiGraph()
+    for record in result:
+        station_a = record['a']['name']
+        station_b = record['b']['name']
+        label = record['cnt']
+        penwidth = record['cnt'] * 0.1
+        graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#00aa00')
+    write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'popular.dot'))
+
+if __name__ == '__main__':
+    if not os.path.exists(OUTPUT_DIRECTORY):
+        os.makedirs(OUTPUT_DIRECTORY)
+    driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))
+    session = driver.session()
+    stations = get_stations(session)
+    # render_hourly(session)
+    render_transporters(session)
+    render_popular_stations(session)
     # nx.drawing.draw(graph)
     # plt.show()
