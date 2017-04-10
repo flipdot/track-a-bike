@@ -44,14 +44,13 @@ def render_hourly(session):
         write_dot(graph, os.path.join(OUTPUT_DIRECTORY, filename))
         date = end
 
-def render_transporters(session):
+def add_transporters(session, graph):
     min_cnt = 20
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED {transporter: true}]->(b)
         WITH a, b, count(*) AS cnt
         WHERE cnt > {min_cnt}
         RETURN a, b, cnt""", {'min_cnt': min_cnt})
-    graph = nx.MultiDiGraph()
     result = list(result)
     max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
     for record in result:
@@ -60,9 +59,8 @@ def render_transporters(session):
         label = record['cnt']
         penwidth = ((record['cnt'] - min_cnt) / max_cnt) * 10
         graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#aa0000')
-    write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'transports.dot'))
 
-def render_popular_stations(session):
+def add_popular_stations(session, graph):
     min_cnt = 27
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED]->(b)
@@ -70,7 +68,6 @@ def render_popular_stations(session):
         WITH a, b, count(*) AS cnt
         WHERE cnt > {min_cnt}
         RETURN a, b, cnt""", {'min_cnt': min_cnt})
-    graph = nx.MultiDiGraph()
     result = list(result)
     max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
     for record in result:
@@ -79,7 +76,6 @@ def render_popular_stations(session):
         label = record['cnt']
         penwidth = ((record['cnt'] - min_cnt) / max_cnt) * 10
         graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#00aa00')
-    write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'popular.dot'))
 
 if __name__ == '__main__':
     if not os.path.exists(OUTPUT_DIRECTORY):
@@ -88,7 +84,9 @@ if __name__ == '__main__':
     session = driver.session()
     stations = get_stations(session)
     # render_hourly(session)
-    render_transporters(session)
-    render_popular_stations(session)
+    graph = nx.MultiDiGraph()
+    add_transporters(session, graph)
+    add_popular_stations(session, graph)
+    write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'popular.dot'))
     # nx.drawing.draw(graph)
     # plt.show()
