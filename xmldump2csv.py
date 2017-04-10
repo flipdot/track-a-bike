@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import os
 from datetime import timedelta
 import sys
@@ -87,34 +88,26 @@ def create_bike_positions_and_movement():
             i = 0
             track_a_bike = TrackABike()
             current_bike_positions = {}
-            all_bikes = list(get_all_bikes())
-            bike_available = {int(bike['bike_id:ID(Bike)']): False for bike in all_bikes}
             for timestamp, data in read_xml_dumps():
                 i += 1
                 if i % 60 == 0:
                     print(timestamp)
                 track_a_bike.load_xml(data)
-                bike_available_update = {int(bike['bike_id:ID(Bike)']): False for bike in all_bikes}
                 for station in track_a_bike.stations.values():
                     bike_positions = []
                     for bike in station['free_bikes']:
                         bike_id = bike['number']
-                        bike_available_update[bike_id] = True
                         prev_station = current_bike_positions.get(bike_id, None)
-                        if bike_available[bike_id] is False and prev_station is not None:
+                        if prev_station is not None and prev_station['id'] != station['id']:
                             duration = (timestamp - prev_station['timestamp'])
-                            # Bikes may disappear for a short time period from a station.
-                            # Make sure it really disappeared by checking if it is now at another station,
-                            # or if it was more than 10 minutes not at the same station
-                            if prev_station['id'] != station['id'] or duration > timedelta(minutes=10):
-                                movement_writer.writerow({
-                                    ':START_ID(Station)': prev_station['id'],
-                                    ':END_ID(Station)': station['id'],
-                                    'timestamp_start:INT': int(prev_station['timestamp'].timestamp()),
-                                    'timestamp_end:INT': int(timestamp.timestamp()),
-                                    'duration:INT': int(duration.total_seconds()),
-                                    'bike_id:INT': bike_id,
-                                })
+                            movement_writer.writerow({
+                                ':START_ID(Station)': prev_station['id'],
+                                ':END_ID(Station)': station['id'],
+                                'timestamp_start:INT': int(prev_station['timestamp'].timestamp()),
+                                'timestamp_end:INT': int(timestamp.timestamp()),
+                                'duration:INT': int(duration.total_seconds()),
+                                'bike_id:INT': bike_id,
+                            })
                         current_bike_positions[bike_id] = {'id': station['id'], 'timestamp': timestamp}
                         bike_position = {headernames_position.get(key, key): bike.get(key, None) for key in
                                          fieldnames_position}
@@ -122,7 +115,6 @@ def create_bike_positions_and_movement():
                         bike_position[headernames_position['timestamp']] = int(timestamp.timestamp())
                         bike_positions.append(bike_position)
                     position_writer.writerows(bike_positions)
-                bike_available.update(bike_available_update)
 
 
 if __name__ == '__main__':
