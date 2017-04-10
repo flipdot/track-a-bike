@@ -45,33 +45,39 @@ def render_hourly(session):
         date = end
 
 def render_transporters(session):
+    min_cnt = 20
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED {transporter: true}]->(b)
         WITH a, b, count(*) AS cnt
-        WHERE cnt > 15
-        RETURN a, b, cnt""")
+        WHERE cnt > {min_cnt}
+        RETURN a, b, cnt""", {'min_cnt': min_cnt})
     graph = nx.MultiDiGraph()
+    result = list(result)
+    max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
     for record in result:
         station_a = record['a']['name']
         station_b = record['b']['name']
         label = record['cnt']
-        penwidth = record['cnt'] * 0.1
-        graph.add_edge(station_a, station_b, label=label, penwidth=penwidth)
+        penwidth = ((record['cnt'] - min_cnt) / max_cnt) * 10
+        graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#aa0000')
     write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'transports.dot'))
 
 def render_popular_stations(session):
+    min_cnt = 27
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED]->(b)
         WHERE NOT EXISTS(r.transporter)
         WITH a, b, count(*) AS cnt
-        WHERE cnt > 25
-        RETURN a, b, cnt""")
+        WHERE cnt > {min_cnt}
+        RETURN a, b, cnt""", {'min_cnt': min_cnt})
     graph = nx.MultiDiGraph()
+    result = list(result)
+    max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
     for record in result:
         station_a = record['a']['name']
         station_b = record['b']['name']
         label = record['cnt']
-        penwidth = record['cnt'] * 0.1
+        penwidth = ((record['cnt'] - min_cnt) / max_cnt) * 10
         graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#00aa00')
     write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'popular.dot'))
 
