@@ -2,4 +2,12 @@
 
 mkdir -p graphviz/png
 cd graphviz/dot
-for name in *.dot; do echo "$name" && dot -Tpng -Gdpi=150 "$name" -o "../png/$name.png"; done
+files=(*.dot)
+i=0
+
+for name in *.dot; do
+    ((i++))
+    trap break SIGINT
+    python ../../cmd_utils.py progress $i ${#files[@]} &&
+    dot -Tpng -Gdpi=150 "$name" > "../png/$name.png"
+done

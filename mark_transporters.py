@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from datetime import datetime, timedelta
 from neo4j.v1 import GraphDatabase, basic_auth
+from cmd_utils import print_progressbar, clear_progressbar
 
 QUERY_TEMPLATE = """
 MATCH (a:Station)-[r:BIKE_MOVED]->(b:Station)
@@ -31,9 +32,13 @@ if __name__ == '__main__':
         SET r.transpoter = true""")
 
     date = START_DATE
+    i = 0
+    total_steps = (END_DATE - START_DATE) / STEP
     while date < END_DATE:
-        print(date)
+        i += 1
+        print_progressbar(i / total_steps)
         start = date
         end = date + WINDOW
         session.run(QUERY_TEMPLATE, {'start': start.timestamp(), 'end': end.timestamp()})
         date += STEP
+    clear_progressbar()

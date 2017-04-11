@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
-mkdir -p graphviz/svg
+mkdir -p graphviz/png
 cd graphviz/dot
-for name in *.dot; do echo "$name" && dot -Tsvg "$name" -o "../svg/$name.svg"; done
+files=(*.dot)
+i=0
+
+for name in *.dot; do
+    ((i++))
+    trap break SIGINT
+    python ../../cmd_utils.py progress $i ${#files[@]} &&
+    dot -Tsvg "$name" > "../svg/$name.svg"
+done

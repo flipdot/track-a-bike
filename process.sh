@@ -24,14 +24,14 @@ es() {
 }
 
 es "Creating CSV files…" &&
-python xmldump2csv.py &&
+#python xmldump2csv.py &&
 es "Removing old graph.db…" &&
-sudo rm -rf $HOME/neo4j/databases/graph.db/ &&
+#sudo rm -rf $HOME/neo4j/databases/graph.db/ &&
 es "Creating Neo4J graph.db…" &&
-sudo ./csv2neo4j.sh &&
+#sudo ./csv2neo4j.sh &&
 es "Starting Neo4J…" &&
-sudo docker run -d -p 7687:7687 -p 7474:7474 -v $HOME/neo4j:/data --name neo4j neo4j &&
-sleep 10 && # Make sure the database is ready
+#sudo docker run -d -p 7687:7687 -p 7474:7474 -v $HOME/neo4j:/data --name neo4j neo4j &&
+#sleep 10 && # Make sure the database is ready
 es "Finding and marking bike transports…" &&
 python mark_transporters.py &&
 es "Generating dot files…" &&

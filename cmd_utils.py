@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import sys
 
 progress_pos = 0
@@ -31,3 +34,9 @@ def clear_progressbar():
     sys.stdout.write(' ' * 30)
     sys.stdout.write('\r')
     sys.stdout.flush()
+
+if __name__ == '__main__':
+    if len(sys.argv) > 3 and sys.argv[1] == 'progress':
+        current = int(sys.argv[2])
+        total = int(sys.argv[3])
+        print_progressbar(current / total)

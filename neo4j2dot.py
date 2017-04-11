@@ -47,6 +47,7 @@ def render_hourly(session):
 def add_transporters(session, graph):
     result = session.run("""
         MATCH (a)-[r:BIKE_MOVED {transporter: true}]->(b)
+        WHERE r.duration < 60 * 60 * 24
         WITH a, b, count(*) AS cnt
         RETURN a, b, cnt
         ORDER BY cnt desc
@@ -68,7 +69,7 @@ def add_popular_stations(session, graph):
         WITH a, b, count(*) AS cnt
         RETURN a, b, cnt
         ORDER BY cnt desc
-        LIMIT 10""")
+        LIMIT 40""")
     result = list(result)
     max_cnt = max(result, key=lambda x: x['cnt'])['cnt']
     min_cnt = min(result, key=lambda x: x['cnt'])['cnt']
@@ -85,9 +86,9 @@ if __name__ == '__main__':
     driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))
     session = driver.session()
     stations = get_stations(session)
-    render_hourly(session)
+    # render_hourly(session)
     graph = nx.MultiDiGraph()
-    add_transporters(session, graph)
+    # add_transporters(session, graph)
     add_popular_stations(session, graph)
     write_dot(graph, os.path.join(OUTPUT_DIRECTORY, 'popular.dot'))
     # nx.drawing.draw(graph)
