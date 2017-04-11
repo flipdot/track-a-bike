@@ -3,8 +3,9 @@
 import os
 from datetime import timedelta
 import sys
+from cmd_utils import print_progressbar, clear_progressbar
 
-from TrackABike import TrackABike, read_xml_dumps
+from TrackABike import TrackABike, read_xml_dumps, count_xml_dumps
 import csv
 
 CSV_DIRECTORY = 'csv'
@@ -34,7 +35,7 @@ def create_stations():
         writer.writerows(stations)
 
 
-def create_bikes():
+def create_bikes(number_of_samples=1):
     track_a_bike = TrackABike()
     fieldnames = ['number', 'version', 'marke_id', 'marke_name', 'is_pedelec']
     headernames = {
@@ -52,7 +53,7 @@ def create_bikes():
         # minute, so we just process a dataset every hour
         if i % 60:
             continue
-        print(timestamp)
+        print_progressbar(i / number_of_samples)
         track_a_bike.load_xml(data)
         for station in track_a_bike.stations.values():
             # print(station['free_bikes'])
@@ -69,7 +70,7 @@ def create_bikes():
         writer.writerows(bikes_list)
 
 
-def create_bike_positions_and_movement():
+def create_bike_positions_and_movement(number_of_samples=0):
     fieldnames_position = ['number', 'timestamp', 'can_be_rented', 'can_be_returned', 'station_id']
     headernames_position = {
         'number': ':START_ID(Bike)',
@@ -90,8 +91,7 @@ def create_bike_positions_and_movement():
             current_bike_positions = {}
             for timestamp, data in read_xml_dumps():
                 i += 1
-                if i % 60 == 0:
-                    print(timestamp)
+                print_progressbar(i / number_of_samples)
                 track_a_bike.load_xml(data)
                 for station in track_a_bike.stations.values():
                     bike_positions = []
@@ -120,13 +120,16 @@ def create_bike_positions_and_movement():
 if __name__ == '__main__':
     if not os.path.exists(CSV_DIRECTORY):
         os.makedirs(CSV_DIRECTORY)
+    number_of_samples = count_xml_dumps()
     track_a_bike = TrackABike()
     print('Creating stations.csv…')
     create_stations()
     print('Creating bikes.csv…')
-    create_bikes()
+    create_bikes(number_of_samples)
+    clear_progressbar()
     print('Creating bike_positions.csv and bike_movements.csv…')
-    create_bike_positions_and_movement()
+    create_bike_positions_and_movement(number_of_samples)
+    clear_progressbar()
     # for timestamp, data in read_xml_dumps():
     #     track_a_bike.load_xml(data)
     #     print(track_a_bike.stations)

@@ -9,7 +9,7 @@
 
 import csv
 import os
-from cmd_utils import print_progressbar
+from cmd_utils import print_progressbar, clear_progressbar
 
 CSV_DIRECTORY = 'csv'
 OUTPUT_DIRECTORY = os.path.join(CSV_DIRECTORY, 'extra')
@@ -17,17 +17,21 @@ OUTPUT_DIRECTORY = os.path.join(CSV_DIRECTORY, 'extra')
 if not os.path.exists(OUTPUT_DIRECTORY):
     os.mkdir(OUTPUT_DIRECTORY)
 
+
 def get_csv(filename):
     with open(os.path.join(CSV_DIRECTORY, filename)) as f:
         reader = csv.DictReader(f)
         for row in reader:
             yield row
 
+
 def get_bike_positions():
     return get_csv('bike_positions.csv')
 
+
 def get_stations():
     return get_csv('stations.csv')
+
 
 if __name__ == '__main__':
     station_ids = [int(x['station_id:ID(Station)']) for x in get_stations()]
@@ -60,3 +64,4 @@ if __name__ == '__main__':
                 current_timestamp = position['timestamp:INT']
                 counter = {x: 0 for x in station_ids}
             counter[int(position[':END_ID(Station)'])] += 1
+    clear_progressbar()

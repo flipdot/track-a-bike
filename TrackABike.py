@@ -92,3 +92,14 @@ def read_xml_dumps():
             timestamp = datetime.strptime(file, '%Y-%m-%d_%H.%M.xml')
             with open(file_path, 'rb') as f:
                 yield (timestamp, f.read())
+
+def count_xml_dumps():
+    result = 0
+    directories = os.listdir(DUMP_DIRECTORY)
+    for directory in directories:
+        directory_path = os.path.abspath(os.path.join(DUMP_DIRECTORY, directory))
+        if not os.path.isdir(directory_path):
+            continue
+        files = os.listdir(directory_path)
+        result += len(files)
+    return result

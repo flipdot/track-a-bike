@@ -24,3 +24,10 @@ def print_progressbar(progress=None):
         bar += chr(ord('█') + round(7 - last_block_percentage * 7))
         sys.stdout.write('▕{0:20}▏ {1:03.2f}%'.format(bar, progress * 100))
     sys.stdout.flush()
+
+def clear_progressbar():
+    sys.stdout.write('\r')
+    sys.stdout.flush()
+    sys.stdout.write(' ' * 30)
+    sys.stdout.write('\r')
+    sys.stdout.flush()
