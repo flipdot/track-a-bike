@@ -29,7 +29,7 @@ if __name__ == '__main__':
     session.run("""
         MATCH (:Station)-[r:BIKE_MOVED]->(:Station)
         WHERE r.duration > 60 * 60 * 24
-        SET r.transpoter = true""")
+        SET r.transporter = true""")
 
     date = START_DATE
     i = 0

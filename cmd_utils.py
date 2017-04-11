@@ -40,3 +40,5 @@ if __name__ == '__main__':
         current = int(sys.argv[2])
         total = int(sys.argv[3])
         print_progressbar(current / total)
+    elif len(sys.argv) == 2 and sys.argv[1] == 'clear_progress':
+        clear_progressbar()

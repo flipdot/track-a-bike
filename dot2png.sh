@@ -5,9 +5,10 @@ cd graphviz/dot
 files=(*.dot)
 i=0
 
-for name in *.dot; do
+for f in "${files[@]}"; do
     ((i++))
     trap break SIGINT
-    python ../../cmd_utils.py progress $i ${#files[@]} &&
-    dot -Tpng -Gdpi=150 "$name" > "../png/$name.png"
+    ../../cmd_utils.py progress $i ${#files[@]} &&
+    dot -Tpng -Gdpi=150 "$f" > "../png/$f.png"
 done
+../../cmd_utils.py clear_progress
