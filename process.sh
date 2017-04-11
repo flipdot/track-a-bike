@@ -23,21 +23,21 @@ es() {
     ec "$cs" "$@"
 }
 
-es Creating CSV files… &&
+es "Creating CSV files…" &&
 python xmldump2csv.py &&
-es Removing old graph.db… &&
+es "Removing old graph.db…" &&
 rm -rf $HOME/neo4j/databases/graph.db/ &&
-es Creating Neo4J graph.db… &&
+es "Creating Neo4J graph.db…" &&
 sudo ./csv2neo4j.sh &&
-es Starting Neo4J… &&
+es "Starting Neo4J…" &&
 sudo docker run -d -p 7687:7687 -p 7474:7474 -v /home/soeren/neo4j:/data --name neo4j neo4j &&
 sleep 10 && # Make sure the database is ready
-es Finding and marking bike transports… &&
+es "Finding and marking bike transports…" &&
 python mark_transporters.py &&
-es Generating dot files… &&
+es "Generating dot files…" &&
 python neo4j2dot.py &&
-es Generating svg files… &&
+es "Generating svg files…" &&
 dot2svg.sh &&
-es Generating png files… &&
+es "Generating png files…" &&
 dot2png.sh &&
-es Done! Please note that the neo4j db is still running at localhost:7474
+es "Done! Please note that the neo4j db is still running at localhost:7474"
