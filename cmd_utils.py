@@ -13,15 +13,14 @@ def print_progressbar(progress=None):
     sys.stdout.write('\r')
     # the exact output you're looking for:
     if progress is None:
-        sys.stdout.write("[%-20s]" % ('-' * progress_pos + '*' + '-' * (20 - progress_pos)))
+        sys.stdout.write('▕{0:░<20}▏'.format('░' * progress_pos + '█'))
         progress_pos += step
-        if progress_pos % 20 == 0:
+        if progress_pos % 19 == 0:
             step *= -1
     else:
-        block = '█'
         int_progress = int(progress * 20)
-        bar = block * int_progress
+        bar = '█' * int_progress
         last_block_percentage = progress * 20 - int_progress
-        bar += chr(ord(block) + round(7 - last_block_percentage * 7))
-        sys.stdout.write("[%-20s] %d%%" % (bar, progress * 100))
+        bar += chr(ord('█') + round(7 - last_block_percentage * 7))
+        sys.stdout.write('▕{0:20}▏ {1:03.2f}%'.format(bar, progress * 100))
     sys.stdout.flush()
