@@ -14,6 +14,6 @@ rsync -a ajvar:~/konraddump/*.tar.xz .
 for f in *.tar.xz; do
     # File date
     fd=$(gd "$(basename $f)")
-    [[ $((fd-ld)) -gt 0 ]] && unp "$f.tar.xz"
+    [[ $((fd-ld)) -gt 0 ]] && unp "$f"
 done
 true
