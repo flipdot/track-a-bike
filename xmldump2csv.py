@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import csv
 import os
-from datetime import timedelta
-import sys
-from cmd_utils import print_progressbar, clear_progressbar
 
 from TrackABike import TrackABike, read_xml_dumps, count_xml_dumps
-import csv
+from src.utils import print_progressbar, clear_progressbar
 
 CSV_DIRECTORY = 'csv'
 

@@ -43,7 +43,7 @@ if ! sudo docker ps -f name=neo4j | silent grep neo4j; then
         -v "$NEO4J_DIR:/data" \
         --name neo4j \
         neo4j
-    
+
 fi
 sleep 10 # Make sure the database is ready
 es "Finding and marking bike transports…"

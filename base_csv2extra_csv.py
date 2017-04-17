@@ -9,7 +9,8 @@
 
 import csv
 import os
-from cmd_utils import print_progressbar, clear_progressbar
+
+from src.utils import print_progressbar, clear_progressbar
 
 CSV_DIRECTORY = 'csv'
 OUTPUT_DIRECTORY = os.path.join(CSV_DIRECTORY, 'extra')

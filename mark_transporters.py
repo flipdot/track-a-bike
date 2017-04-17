@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from datetime import datetime, timedelta
+
 from neo4j.v1 import GraphDatabase, basic_auth
-from cmd_utils import print_progressbar, clear_progressbar
+
+from src.utils import print_progressbar, clear_progressbar
 
 QUERY_TEMPLATE = """
 MATCH (a:Station)-[r:BIKE_MOVED]->(b:Station)
@@ -18,7 +20,7 @@ SET r_.transporter = true
 """
 
 START_DATE = datetime.strptime('25.03.2017 00:00', '%d.%m.%Y %H:%M')
-END_DATE = datetime.strptime('09.04.2017 00:00', '%d.%m.%Y %H:%M')
+END_DATE = datetime.strptime('15.04.2017 00:00', '%d.%m.%Y %H:%M')
 STEP = timedelta(minutes=5)
 WINDOW = timedelta(minutes=15)
 

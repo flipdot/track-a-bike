@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import sys
+
+from constants import CSV_DIRECTORY
+import csv
 
 progress_pos = 0
 step = 1
+
 
 def print_progressbar(progress=None):
     """
@@ -28,12 +32,30 @@ def print_progressbar(progress=None):
         sys.stdout.write('▕{0:20}▏ {1:03.2f}%'.format(bar, progress * 100))
     sys.stdout.flush()
 
+
 def clear_progressbar():
     sys.stdout.write('\r')
     sys.stdout.flush()
     sys.stdout.write(' ' * 30)
     sys.stdout.write('\r')
     sys.stdout.flush()
+
+def get_csv(filename):
+    number_of_rows = 0
+    with open(os.path.join(CSV_DIRECTORY, filename)) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if number_of_rows % 100000 == 0:
+                print_progressbar()
+            number_of_rows += 1
+    with open(os.path.join(CSV_DIRECTORY, filename)) as f:
+        reader = csv.DictReader(f)
+        i = 0
+        for row in reader:
+            i += 1
+            print_progressbar(i / number_of_rows)
+            yield row
+    clear_progressbar()
 
 if __name__ == '__main__':
     if len(sys.argv) > 3 and sys.argv[1] == 'progress':
