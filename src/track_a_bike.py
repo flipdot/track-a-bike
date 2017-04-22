@@ -1,12 +1,11 @@
 from datetime import datetime
 
-import request_templates
 import requests
 from lxml import etree
 import re
 import os
 
-from constants import XML_DIRECTORY
+from constants import XML_DIRECTORY, REQUEST_TEMPLATES, CREDENTIALS
 
 DEFAULT_HEADERS = {
     'User-Agent': 'flinkster.android/3.0',
@@ -18,30 +17,39 @@ DEFAULT_HEADERS = {
 
 API_URL = 'https://xml.dbcarsharing-buchung.de/hal2_cabserver/hal2_cabserver_3.php'
 
+class APIException(BaseException):
+    pass
 
 class TrackABike:
-    def __init__(self, username=None, password=None, headers=DEFAULT_HEADERS):
-        self.username = username
-        self.password = password
+    def __init__(self, headers=DEFAULT_HEADERS):
         self.headers = headers
         self.raw_data = None
 
     def refresh(self, max_results=60, search_radius=8049, lat=51.318564, lng=9.500768, request_time=None):
-        if not (self.username and self.password):
-            raise ValueError('Username and password not set')
-
         request_time = request_time or datetime.now()
-        body = request_templates.LIST_BIKES.format(
-            max_results=max_results,
-            search_radius=search_radius,
-            lat=lat,
-            long=lng,
-            username=self.username,
-            password=self.password,
-            request_time=request_time.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
-        )
-        response = requests.post(API_URL, body, headers=self.headers)
-        self.load_xml(response.content)
+        for username, password in CREDENTIALS:
+            body = REQUEST_TEMPLATES['LIST_BIKES'].format(
+                max_results=max_results,
+                search_radius=search_radius,
+                lat=lat,
+                long=lng,
+                username=username,
+                password=password,
+                request_time=request_time.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+            )
+            response = requests.post(API_URL, body, headers=self.headers)
+            self.load_xml(response.content)
+            error = self.get_error()
+            if not error:
+                break
+            print(error)
+
+    def get_error(self):
+        fault = self.xml.find('.//SOAP-ENV:Fault', {'SOAP-ENV': 'http://schemas.xmlsoap.org/soap/envelope/'})
+        if fault is not None:
+            text = fault.find('detail').find('Text')
+            return text.text
+        return None
 
     def load_xml(self, raw_data):
         self.raw_data = raw_data
