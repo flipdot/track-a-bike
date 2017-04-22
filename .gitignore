@@ -2,6 +2,7 @@ config.ini
 data/
 csv/
 graphviz/
+.idea/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
