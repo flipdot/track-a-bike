@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import logging
 import requests
 from lxml import etree
 import re
@@ -42,7 +43,7 @@ class TrackABike:
             error = self.get_error()
             if not error:
                 break
-            print(error)
+            logging.warning(error)
 
     def get_error(self):
         fault = self.xml.find('.//SOAP-ENV:Fault', {'SOAP-ENV': 'http://schemas.xmlsoap.org/soap/envelope/'})

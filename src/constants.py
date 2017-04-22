@@ -9,6 +9,8 @@ LOG_FORMAT = '%(asctime)-15s %(message)s'
 CREDENTIALS = [
     ('t_andoid_cab', 'c91a49f43a'),
     ('t_andoid_kon', 'a2027c40b1'),
+    ('t_andoid_srh', '83ba7e262a'),
+    ('t_h2a_lidl_android', 'gYIkGT!*rL'),
 ]
 
 REQUEST_TEMPLATES = {
