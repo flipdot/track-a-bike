@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 from configparser import ConfigParser
-from TrackABike import TrackABike
-from lxml import etree
-from pprint import pprint
+
+from track_a_bike import TrackABike
 
 config = ConfigParser()
 

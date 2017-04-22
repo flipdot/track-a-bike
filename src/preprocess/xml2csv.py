@@ -3,10 +3,9 @@
 import csv
 import os
 
-from TrackABike import TrackABike, read_xml_dumps, count_xml_dumps
-from src.utils import print_progressbar, clear_progressbar
-
-CSV_DIRECTORY = 'csv'
+from track_a_bike import TrackABike, read_xml_dumps, count_xml_dumps
+from utils import print_progressbar, clear_progressbar
+from constants import CSV_DIRECTORY
 
 def get_all_bikes():
     with open(os.path.join(CSV_DIRECTORY, 'bikes.csv')) as f:
@@ -115,11 +114,10 @@ def create_bike_positions_and_movement(number_of_samples=0):
                     position_writer.writerows(bike_positions)
 
 
-if __name__ == '__main__':
+def run():
     if not os.path.exists(CSV_DIRECTORY):
         os.makedirs(CSV_DIRECTORY)
     number_of_samples = count_xml_dumps()
-    track_a_bike = TrackABike()
     print('Creating stations.csv…')
     create_stations()
     print('Creating bikes.csv…')

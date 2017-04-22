@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-from neo4j.v1 import GraphDatabase, basic_auth
-import matplotlib.pyplot as plt
-from numpy.random import rand
 from datetime import datetime
-
-from TrackABike import read_xml_dumps, TrackABike
 from pprint import pprint
+
+import matplotlib.pyplot as plt
+from neo4j.v1 import GraphDatabase, basic_auth
+
+from track_a_bike import read_xml_dumps, TrackABike
 
 if __name__ == '__main__':
     track_a_bike = TrackABike()

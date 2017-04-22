@@ -96,7 +96,7 @@ def add_popular_stations(session, graph, limit=10):
         graph.add_node(station_b, fillcolor='#eeeeee', style='filled')
         graph.add_edge(station_a, station_b, label=label, penwidth=penwidth, color='#00aa00')
 
-def main():
+def run():
     if not os.path.exists(OUTPUT_DIRECTORY):
         os.makedirs(OUTPUT_DIRECTORY)
     driver = GraphDatabase.driver('bolt://localhost:7687', auth=basic_auth('neo4j', 'Eiqu3soh'))

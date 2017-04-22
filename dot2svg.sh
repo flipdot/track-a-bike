@@ -11,7 +11,7 @@ function do_se_sing() {
         -Goverlap_scaling=4 \
         -Gremincross=true \
         -Nshape=box \
-        "/data/dot/$1" -o "/data/svg/$1.svg"
+        "$1" -o "../svg/$1.svg"
 }
 
 files=(*.dot)

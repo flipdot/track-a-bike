@@ -5,9 +5,9 @@ import sys
 from configparser import ConfigParser
 from datetime import datetime
 
-from TrackABike import TrackABike
+from track_a_bike import TrackABike
 
-DUMP_DIRECTORY = sys.argv[1] if len(sys.argv) > 1 else 'dumps'
+DUMP_DIRECTORY = sys.argv[1] if len(sys.argv) > 1 else 'xml'
 
 if not os.path.exists(DUMP_DIRECTORY):
     os.makedirs(DUMP_DIRECTORY)

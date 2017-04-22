@@ -40,6 +40,7 @@ def clear_progressbar():
     sys.stdout.write('\r')
     sys.stdout.flush()
 
+
 def get_csv(filename):
     number_of_rows = 0
     with open(os.path.join(CSV_DIRECTORY, filename)) as f:
@@ -56,6 +57,7 @@ def get_csv(filename):
             print_progressbar(i / number_of_rows)
             yield row
     clear_progressbar()
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 3 and sys.argv[1] == 'progress':

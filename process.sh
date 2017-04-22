@@ -31,7 +31,7 @@ export NEO4J_DIR="$(pwd)/neo4j"
 mkdir -p "$NEO4J_DIR"
 
 es "Creating CSV files…"
-./xmldump2csv.py
+src/preprocess/xml2csv.py
 es "Removing old graph.db…"
 sudo rm -rf $NEO4J_DIR/databases/graph.db/
 es "Creating Neo4J graph.db…"

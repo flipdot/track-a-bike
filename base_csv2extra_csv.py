@@ -5,7 +5,7 @@
 # into more "redundant" information which is easier to work with
 # in further processing.
 # TODO: `bike_movements.csv` is already a "redundant" csv. It
-# TODO: should be generated here, not in `xmldump2csv.py`
+# TODO: should be generated here, not in `xml2csv.py`
 
 import csv
 import os

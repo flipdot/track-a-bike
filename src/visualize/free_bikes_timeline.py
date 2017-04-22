@@ -10,7 +10,7 @@ import numpy as np
 from utils import print_progressbar, clear_progressbar, get_csv
 
 
-def main():
+def run():
     station_ids_to_plot = None  # [508, 509, 510, 101, 102]
     stations = {}
     timestamps = []

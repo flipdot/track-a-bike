@@ -6,7 +6,7 @@ from lxml import etree
 import re
 import os
 
-DUMP_DIRECTORY = os.path.abspath('dumps')
+from constants import XML_DIRECTORY
 
 DEFAULT_HEADERS = {
     'User-Agent': 'flinkster.android/3.0',
@@ -79,10 +79,10 @@ class TrackABike:
 
 
 def read_xml_dumps():
-    directories = os.listdir(DUMP_DIRECTORY)
+    directories = os.listdir(XML_DIRECTORY)
     directories.sort()
     for directory in directories:
-        directory_path = os.path.abspath(os.path.join(DUMP_DIRECTORY, directory))
+        directory_path = os.path.join(XML_DIRECTORY, directory)
         if not os.path.isdir(directory_path):
             continue
         files = os.listdir(directory_path)
@@ -93,11 +93,12 @@ def read_xml_dumps():
             with open(file_path, 'rb') as f:
                 yield (timestamp, f.read())
 
+
 def count_xml_dumps():
     result = 0
-    directories = os.listdir(DUMP_DIRECTORY)
+    directories = os.listdir(XML_DIRECTORY)
     for directory in directories:
-        directory_path = os.path.abspath(os.path.join(DUMP_DIRECTORY, directory))
+        directory_path = os.path.abspath(os.path.join(XML_DIRECTORY, directory))
         if not os.path.isdir(directory_path):
             continue
         files = os.listdir(directory_path)
