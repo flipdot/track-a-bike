@@ -14,7 +14,7 @@ def run():
     track_a_bike = TrackABike()
     track_a_bike.refresh()
 
-    now = datetime.utcnow()
+    now = datetime.now()
     directory_name = os.path.join(XML_DIRECTORY, now.strftime('%Y-%m-%d'))
     filename = now.strftime('%Y-%m-%d_%H.%M')
 

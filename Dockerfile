@@ -60,12 +60,19 @@ VOLUME /data
 
 EXPOSE 7474 7473 7687
 
-COPY src /app
-COPY requirements.txt /app
-WORKDIR /app
-
-RUN pip install -r requirements.txt
+RUN apt-get install -y tzdata
+ENV TZ=Europe/Berlin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get install -y python3-pyqt4
+
+COPY requirements.txt /app/requirements.txt
+
+WORKDIR /app
+RUN pip install -r requirements.txt
+
+COPY src /app
+
+
 
 ENTRYPOINT ["python", "app.py"]
