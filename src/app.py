@@ -29,10 +29,12 @@ def command_collect(args):
 
 
 def command_preprocess(args):
+    print('Not yet implemented')
     pass
 
 
 def command_visualize(args):
+    print('Not yet implemented')
     pass
 
 
