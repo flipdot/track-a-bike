@@ -3,11 +3,12 @@ import threading
 from configparser import ConfigParser
 
 import sys
+from datetime import datetime
 
 from preprocess import xml2csv
 from visualize import free_bikes_timeline, neo4j2dot
 from constants import LOG_FORMAT
-from collect import dump
+from collect import dump, compress
 import logging
 import argparse
 
@@ -23,9 +24,21 @@ def set_interval(func, sec, *args, **kwargs):
     return t
 
 
-def command_collect(args):
+last_date = None
+
+
+def dump_and_compress():
+    global last_date
     dump.run()
-    set_interval(dump.run, args.interval * 60)
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    if last_date is not None and last_date != current_date:
+        compress.run(last_date)
+    last_date = current_date
+
+
+def command_collect(args):
+    dump_and_compress()
+    set_interval(dump_and_compress, args.interval * 60)
 
 
 def command_preprocess(args):

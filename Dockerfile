@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 # Graphviz. The precompiled version does not support many of the options, therefore we compile it ourselfs
 
-RUN apt-get update
+RUN apt-get update --fix-missing
 RUN apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial \
     subversion libgts-dev libatk1.0-0 libcairo2 libexpat1 \

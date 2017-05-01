@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 from datetime import datetime
 from constants import XML_DIRECTORY
 import logging

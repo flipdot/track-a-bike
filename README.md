@@ -4,9 +4,9 @@ Collects data from Rent a Bike.
 
 ## Usage
 
-    docker run --name track-a-bike --rm -v $HOME/track-a-bike/:/data flipdot/track-a-bike collect
+    docker run --name track-a-bike --rm --restart=unless-stopped -v $HOME/track-a-bike/:/data flipdot/track-a-bike collect
 
-The data will be saved to `$HOME/track-a-bike/xml/`
+The data will be saved to `$HOME/track-a-bike/xml/` and compressed every day.
 
 ## TODO
 
