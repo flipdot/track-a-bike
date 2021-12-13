@@ -1,6 +1,6 @@
 cycler==0.10.0
 decorator==4.0.11
-lxml==4.6.3
+lxml==4.6.5
 matplotlib==2.0.0
 neo4j-driver==1.2.1
 networkx==1.11
