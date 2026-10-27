@@ -2,7 +2,7 @@
 name = "track-a-bike"
 version = "0.1.0"
 description = "Collect db carsharing bike data via the SOAP XML API, store it in Neo4j/SQL and visualize it"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "lxml>=6.0.0",
     "matplotlib>=3.9.0",
