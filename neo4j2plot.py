@@ -3,7 +3,7 @@ from datetime import datetime
 from pprint import pprint
 
 import matplotlib.pyplot as plt
-from neo4j.v1 import GraphDatabase, basic_auth
+from neo4j import GraphDatabase, basic_auth
 
 from track_a_bike import read_xml_dumps, TrackABike
 

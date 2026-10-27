@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, \
                        String
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 
 DB_PREFIX = 'tab_'
@@ -65,8 +65,8 @@ class Station(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(128))
-    lat = Column(Float(Precision=64))
-    lng = Column(Float(Precision=64))
+    lat = Column(Float)
+    lng = Column(Float)
     is_outside = Column(Boolean())
 
     temporal_locations = relationship("TemporalLocation",

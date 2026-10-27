@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-from neo4j.v1 import GraphDatabase, basic_auth
+from neo4j import GraphDatabase, basic_auth
 import networkx as nx
 from networkx.drawing.nx_pydot import write_dot
 from matplotlib import pyplot as plt
@@ -37,8 +37,8 @@ def render_hourly(session):
             station_a = record['a']['name'].replace('/', ' /\n')
             station_b = record['b']['name'].replace('/', ' /\n')
             bike_id = record['r']['bike_id']
-            start_time = datetime.fromtimestamp(record['r']['timestamp_start']).strftime('%H\:%M')
-            end_time = datetime.fromtimestamp(record['r']['timestamp_end']).strftime('%H\:%M')
+            start_time = datetime.fromtimestamp(record['r']['timestamp_start']).strftime(r'%H\:%M')
+            end_time = datetime.fromtimestamp(record['r']['timestamp_end']).strftime(r'%H\:%M')
             label = f'{start_time} -\n{end_time}'
             color = 'red' if record['r']['transporter'] else '#aaaaaa'
             penwidth = 2 if record['r']['transporter'] else 1
